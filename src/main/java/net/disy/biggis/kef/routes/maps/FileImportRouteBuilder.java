@@ -1,4 +1,4 @@
-//Copyright (c) 2016 by Disy Informationssysteme GmbH
+// Copyright (c) 2016 by Disy Informationssysteme GmbH
 package net.disy.biggis.kef.routes.maps;
 
 import static org.apache.camel.LoggingLevel.INFO;
@@ -27,6 +27,9 @@ public class FileImportRouteBuilder extends SpringRouteBuilder {
   @Value("${kafka-topic-prefix}")
   private String kafkaTopicPrefix;
 
+  @Value("${import-data-folder}")
+  private String importFolder;
+
   @Autowired
   private ShutdownService shutdownService;
 
@@ -34,7 +37,7 @@ public class FileImportRouteBuilder extends SpringRouteBuilder {
   public void configure() throws Exception {
     shutdownService.registerRoute(ROUTE_ID);
     // @formatter:off
-    from("file:src/data?recursive=true&noop=true&idempotent=true&sendEmptyMessageWhenIdle=true&delay=5000") //$NON-NLS-1$
+    from("file:" + importFolder + "?recursive=true&noop=true&idempotent=true&sendEmptyMessageWhenIdle=true&delay=5000") //$NON-NLS-1$
       .idempotentConsumer(fileNameExpression(), memoryIdempotentRepository(20000))
       .routeId(ROUTE_ID)
       .choice()
