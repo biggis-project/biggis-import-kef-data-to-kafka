@@ -35,6 +35,14 @@ public class FileImportRouteBuilder extends SpringRouteBuilder {
 
   @Override
   public void configure() throws Exception {
+
+    /*
+      Overwrite variable
+    */
+    String kafkaHost = System.getenv("KAFKA_HOST");
+    if ( kafkaHost != null && !kafkaHost.isEmpty())
+      kafkaRouteConfiguration = "kafka:" + kafkaHost + ":9092?clientId=kef-import";
+
     shutdownService.registerRoute(ROUTE_ID);
     // @formatter:off
     from("file:" + importFolder + "?recursive=true&noop=true&idempotent=true&sendEmptyMessageWhenIdle=true&delay=5000") //$NON-NLS-1$

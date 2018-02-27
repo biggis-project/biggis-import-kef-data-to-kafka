@@ -1,0 +1,21 @@
+version: '2'
+services:
+
+  keftokafka:
+    image: registry.biggis.project.de/demo/keftokafka
+    environment:
+      KAFKA_HOST: kafka.middleware
+    labels:
+      io.rancher.container.pull_image: 'always'
+    volumes:
+      - kef-demo-data:/kef-demo-data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
+
+volumes:
+  kef-demo-data:
+    driver: rancher-nfs
+    external: true
