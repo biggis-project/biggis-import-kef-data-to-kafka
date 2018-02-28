@@ -2,11 +2,12 @@ version: '2'
 services:
 
   keftokafka:
-    image: registry.biggis.project.de/demo/keftokafka
+    image: registry.biggis.project.de/demo/vitimeo-kafka
     environment:
       KAFKA_HOST: kafka.middleware
     labels:
       io.rancher.container.pull_image: 'always'
+      io.rancher.container.start_once: true
     volumes:
       - kef-demo-data:/kef-demo-data
     logging:
