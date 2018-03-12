@@ -36,11 +36,16 @@ public class AddKafkaMessageHeadersProcessor implements Processor {
 
   private String createTopicName(Exchange exchange) {
     String fileOnlyName = fileOnlyNameExpression().evaluate(exchange, String.class);
+
     String pattern = Pattern.quote(File.separator);
-    return Stream
-        .of(getFileName(exchange).split(pattern))
-        .filter(s -> !s.equalsIgnoreCase(fileOnlyName))
-        .collect(Collectors.joining(TOPIC_DELIMITER, topicPrefix, "")); //$NON-NLS-1$
+
+    String topicname = Stream
+            .of(getFileName(exchange).split(pattern))
+            .filter(s -> !s.equalsIgnoreCase(fileOnlyName))
+            .collect(Collectors.joining(TOPIC_DELIMITER, topicPrefix, ""));
+
+    return topicname;
+
   }
 
 }

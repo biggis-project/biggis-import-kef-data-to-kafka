@@ -39,27 +39,63 @@ public class FileImportRouteBuilder extends SpringRouteBuilder {
     /*
       Overwrite variable
     */
+    String pushVitimeoData = System.getenv("PUSH_VITIMEO_DATA");
     String kafkaHost = System.getenv("KAFKA_HOST");
+
     if ( kafkaHost != null && !kafkaHost.isEmpty())
       kafkaRouteConfiguration = "kafka:" + kafkaHost + ":9092?clientId=kef-import";
 
-    shutdownService.registerRoute(ROUTE_ID);
-    // @formatter:off
-    from("file:" + importFolder + "?recursive=true&noop=true&idempotent=true&sendEmptyMessageWhenIdle=true&delay=5000") //$NON-NLS-1$
-      .idempotentConsumer(fileNameExpression(), memoryIdempotentRepository(20000))
-      .routeId(ROUTE_ID)
-      .choice()
-        .when(body().isNull())
-          .log(INFO, "No more files.") //$NON-NLS-1$
-          .setBody(simple(ROUTE_ID))
-          .to(StopRouteBuilder.ROUTE_URI)
-        .otherwise()
-          .log(INFO, "Processing file ${header[CamelFileName]}") //$NON-NLS-1$
-          .process(new AddKafkaMessageHeadersProcessor(kafkaTopicPrefix))
-          .convertBodyTo(String.class, StandardCharsets.UTF_8.name())
-          .log(INFO, "Sending message to topic ${header[kafka.TOPIC]} with key ${header[kafka.CONTENT_TYPE]}")
-          .to(kafkaRouteConfiguration);
-    // @formatter:on
+    /*
+       Push maps only
+     */
+    if (pushVitimeoData != null && !pushVitimeoData.isEmpty()) {
+
+      switch (pushVitimeoData) {
+        case "maps":
+
+          shutdownService.registerRoute(ROUTE_ID);
+          // @formatter:off
+          from("file:" + importFolder + "/import-maps?recursive=true&noop=true&idempotent=true&sendEmptyMessageWhenIdle=true&delay=5000") //$NON-NLS-1$
+                  //.idempotentConsumer(fileNameExpression(), memoryIdempotentRepository(20000))
+                  .routeId(ROUTE_ID)
+                  .choice()
+                  .when(body().isNull())
+                  .log(INFO, "No more files.") //$NON-NLS-1$
+                  .setBody(simple(ROUTE_ID))
+                  .to(StopRouteBuilder.ROUTE_URI)
+                  .otherwise()
+                  .log(INFO, "Processing file ${header[CamelFileName]}") //$NON-NLS-1$
+                  .process(new AddKafkaMessageHeadersProcessor(kafkaTopicPrefix))
+                  .convertBodyTo(String.class, StandardCharsets.UTF_8.name())
+                  .log(INFO, "Sending message to topic ${header[kafka.TOPIC]} with key ${header[kafka.CONTENT_TYPE]}")
+                  .to(kafkaRouteConfiguration);
+          // @formatter:on
+          break;
+        case "charts":
+
+          shutdownService.registerRoute(ROUTE_ID);
+          // @formatter:off
+          from("file:" + importFolder + "/import-charts?recursive=true&noop=true&idempotent=true&sendEmptyMessageWhenIdle=true&delay=5000") //$NON-NLS-1$
+                  //.idempotentConsumer(fileNameExpression(), memoryIdempotentRepository(20000))
+                  .routeId(ROUTE_ID)
+                  .choice()
+                  .when(body().isNull())
+                  .log(INFO, "No more files.") //$NON-NLS-1$
+                  .setBody(simple(ROUTE_ID))
+                  .to(StopRouteBuilder.ROUTE_URI)
+                  .otherwise()
+                  .log(INFO, "Processing file ${header[CamelFileName]}") //$NON-NLS-1$
+                  .process(new AddKafkaMessageHeadersProcessor(kafkaTopicPrefix))
+                  .convertBodyTo(String.class, StandardCharsets.UTF_8.name())
+                  .log(INFO, "Sending message to topic ${header[kafka.TOPIC]} with key ${header[kafka.CONTENT_TYPE]}")
+                  .to(kafkaRouteConfiguration);
+          // @formatter:on
+          break;
+      }
+
+    }
+
+
   }
 
 }
