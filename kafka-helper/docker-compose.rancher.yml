@@ -1,0 +1,18 @@
+version: '2'
+services:
+
+  vitimeo-kafka-helper:
+    image: registry.biggis.project.de/demo/vitimeo-kafka:helper
+    environment:
+      USER_ID: 1000
+      USER_NAME: kafka
+      TIMEZONE: Europe/Berlin
+      ZK_HOST: zookeeper.middleware
+    labels:
+      io.rancher.container.pull_image: 'always'
+      io.rancher.container.start_once: true
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "1m"
+        max-file: "1"
