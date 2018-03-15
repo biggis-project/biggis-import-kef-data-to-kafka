@@ -2,7 +2,7 @@ version: '2'
 services:
 
   vitimeo-kafka-helper:
-    image: registry.biggis.project.de/demo/vitimeo-kafka:helper
+    image: registry.biggis.project.de/demo/vitimeteo-kafka:helper
     environment:
       USER_ID: 1000
       USER_NAME: kafka

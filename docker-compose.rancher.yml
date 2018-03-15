@@ -2,7 +2,7 @@ version: '2'
 services:
 
   vitimeo-charts-kafka:
-    image: registry.biggis.project.de/demo/vitimeo-kafka
+    image: registry.biggis.project.de/demo/vitimeteo-kafka
     environment:
       KAFKA_HOST: kafka.middleware
       PUSH_VITIMEO_DATA: charts
@@ -18,7 +18,7 @@ services:
         max-file: "1"
 
   vitimeo-maps-kafka:
-    image: registry.biggis.project.de/demo/vitimeo-kafka
+    image: registry.biggis.project.de/demo/vitimeteo-kafka
     environment:
       KAFKA_HOST: kafka.middleware
       PUSH_VITIMEO_DATA: maps
